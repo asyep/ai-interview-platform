@@ -3,7 +3,7 @@
 **Brief:** Rakamin Fullstack Product Engineer — AI Interview Platform  
 **Audit date:** 24 September 2026  
 **Scope:** repository documents, `api/`, `web/`, local runtime and test commands.  
-**Overall result:** core local implementation and available automated checks pass; the assignment is **not yet 100% submission-complete**. External submission evidence (canonical PR, final visual evidence, hosted video and hiring-platform upload) is not present or verifiable.
+**Overall result:** core local implementation and available automated checks pass; the assignment is **not yet 100% submission-complete**. PR #133 is recorded from the project owner's confirmation; final visual evidence, hosted video, hiring-platform upload, and current CI/review/merge state remain unverified.
 
 ## Step-by-step verification
 
@@ -14,7 +14,7 @@
 | 3. Problem Analysis | **Documented** | [`step-3-problem-analysis.md`](step-3-problem-analysis.md) records 0 P0, 8 P1, 15 P2 and 2 P3 findings, classifies missing specification vs defective implementation, states impact/root cause and flags constraint signals. Invite routing was an identified defect and has since been fixed in code. |
 | 4. Revamp Strategy | **Documented** | [`step-4-revamp-strategy.md`](step-4-revamp-strategy.md) selects Option A (tenant boundary and evidence verification), includes acceptance criteria, edge cases and option trade-offs. |
 | 5. Monozukuri Implementation | **Local implementation/tests pass; integration evidence partial** | Tenant membership auth and `X-Tenant-Scheme`, JWT request validation, REST/WebSocket authorization, `Portfolios::EvidenceValidator`, `not_assessed`, persisted fit-gap generation state, and API–UI `expected_level`/`is_override` contracts are present. RSpec and web contract suite pass; see test record below. No DB-backed two-tenant request/WebSocket integration suite, component/E2E suite, or live Gemini semantic verification is evidenced. |
-| 6. Final Submission | **Draft exists; submission incomplete** | [`step-6-final-report-draft.md`](step-6-final-report-draft.md) has narrative, tests, seeded fault history, AI verification moment and 3–5 minute video outline. It is Markdown, not final PDF. Sanitized final UI screenshots, hosted video, hiring-platform upload, canonical PR number, GitHub CI/reviewer/merge status remain absent/unverified. |
+| 6. Final Submission | **Draft exists; submission incomplete** | [`step-6-final-report-draft.md`](step-6-final-report-draft.md) has narrative, tests, seeded fault history, AI verification moment, PR #133 URL and 3–5 minute video outline. PR #133 is recorded per owner confirmation; CI/reviewer/merge status is not independently verified. The report is Markdown, not final PDF. Sanitized final UI screenshots, hosted video and hiring-platform upload remain outstanding. |
 
 ## Automated checks run
 
@@ -43,7 +43,7 @@ An AI-assisted review missed the already documented candidate invite host mismat
 
 ## Brief requirements still outstanding
 
-1. Create or verify a **canonical numbered PR URL** and record CI/reviewer/status. The supplied `/pull/new/feature/product-engineer-revamp` URL only opens the PR creation page. `gh auth status` reports an invalid GitHub token, so current PR state could not be verified through the CLI.
+1. Verify PR #133's CI/reviewer/status with valid GitHub access; the URL itself is recorded from the project owner's confirmation, but `gh auth status` reported an invalid token during audit.
 2. Produce sanitized final UI screenshots showing the revamped flow and required error/edge/responsive states. Current supplied screenshots are pre-fix reproductions and include local/synthetic identifiers; they are not final-state evidence.
 3. Record and host the requested **3–5 minute walkthrough**; the written outline is ready, but no video URL exists yet.
 4. Convert the final, evidence-complete report into the brief's single PDF and upload it to the hiring platform. No upload receipt or submission link is available.

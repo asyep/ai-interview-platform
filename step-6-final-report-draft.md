@@ -3,20 +3,20 @@
 **Proyek:** AI Interview Platform — Product Engineer Revamp  
 **Tanggal laporan:** 24 September 2026  
 **Branch:** feature/product-engineer-revamp  
-**Status:** Commit `2b65d9a` tersinkron dengan remote-tracking branch pada saat audit; perubahan dokumentasi audit/Step 5 yang sedang diselesaikan masih lokal. Tautan yang diberikan membuka halaman pembuatan Pull Request.
+**Status:** Branch `feature/product-engineer-revamp` tersinkron dengan remote sebelum pembaruan laporan ini. Pull Request resmi #133 telah dibuat menurut konfirmasi pemilik branch; perubahan dokumen dalam pembaruan ini akan didorong setelah commit.
 
-> **Catatan submission:** URL yang diberikan berakhiran /pull/new/feature/product-engineer-revamp, yaitu halaman untuk membuat PR, bukan alamat PR bernomor yang telah dibuat. Setelah PR dibuat, ganti tautan ini dengan URL PR kanonis dan isi status review/merge.
+> **Catatan status:** URL kanonis PR #133 diberikan oleh pemilik branch. Status review, checks/CI, dan merge belum diverifikasi dalam audit ini.
 
 ## 1. Informasi branch dan Pull Request
 
 - Fork/remote: [asyep/ai-interview-platform](https://github.com/asyep/ai-interview-platform)
 - Branch kerja: [feature/product-engineer-revamp](https://github.com/asyep/ai-interview-platform/tree/feature/product-engineer-revamp)
-- Halaman pembukaan PR: [Buat Pull Request dari branch revamp](https://github.com/asyep/ai-interview-platform/pull/new/feature/product-engineer-revamp)
+- Pull Request resmi: [rakamindev/ai-interview-platform #133](https://github.com/rakamindev/ai-interview-platform/pull/133) (URL dikonfirmasi oleh pemilik branch).
 - Base yang terlihat di repository lokal: main pada commit b836d02.
 - Commit branch: [19488a0113b5c109f68a151adeca43baa98156b8](https://github.com/asyep/ai-interview-platform/commit/19488a0113b5c109f68a151adeca43baa98156b8) — **feat: complete Option A tenant isolation, login fix, and UI integration**.
-- HEAD dan `origin/feature/product-engineer-revamp` menunjuk commit `2b65d9a0343d3742531f48e46dd7ae7cdf5671a1` — **docs: finalize step-6 report draft and fix candidate interview link routing**. Commit sebelumnya `19488a0` memuat implementasi utama (56 file berubah; +1.686/-240). Commit `2b65d9a` memuat fix URL undangan dan laporan Step 6.
+- Sebelum pembaruan dokumen ini, HEAD dan `origin/feature/product-engineer-revamp` menunjuk commit `cb0d767` — **docs: sync compliance audit, step-5 monozukuri, and step-6 report draft**. Commit `19488a0` memuat implementasi utama (56 file berubah; +1.686/-240); `2b65d9a` memuat fix URL undangan dan draf Step 6.
 - Ringkasan commit: 56 file berubah, sekitar 1.686 penambahan dan 240 penghapusan. Perubahan mencakup otorisasi tenant, validasi evidence AI, generation fit-gap, migrasi/schema, API–UI contract, unit/contract tests, serta dokumentasi Steps 2–5.
-- Link `/pull/new/feature/product-engineer-revamp` adalah halaman pembuatan PR, bukan PR bernomor. Pemeriksaan `gh auth status` menunjukkan token GitHub invalid; keberadaan PR, nomor PR, reviewer, CI GitHub, dan status merge tidak dapat diverifikasi. Jangan menyatakan PR sudah dibuat/ditinjau/merge.
+- Keberadaan dan URL PR #133 dicatat berdasarkan konfirmasi pemilik branch. `gh auth status` sebelumnya menunjukkan token GitHub invalid, sehingga reviewer, CI/checks, dan status merge tidak terverifikasi secara independen. Jangan menyatakan PR sudah ditinjau atau merge tanpa bukti terbaru.
 
 ## 2. Step 1 — Setup & Environment
 
@@ -124,25 +124,25 @@ Build Vite memberi peringatan posisi anotasi komentar di dependency Zod; build t
 
 | Waktu | Bagian | Poin narasi dan tampilan |
 |---|---|---|
-| 0:00–0:25 | Pembuka | Sebut tujuan revamp: hasil interview perlu aman lintas tenant, dapat ditelusuri ke bukti, dan punya status yang jujur. Tampilkan branch/PR setelah PR benar-benar dibuat. |
+| 0:00–0:25 | Pembuka | Sebut tujuan revamp: hasil interview perlu aman lintas tenant, dapat ditelusuri ke bukti, dan punya status yang jujur. Tampilkan branch dan PR #133. |
 | 0:25–0:55 | Domain dan masalah | Jelaskan alur assessor dan kandidat. Tampilkan ringkasan Step 3: 0 P0, 8 P1, 15 P2, 2 P3; tekankan bahwa audit juga menemukan gap spesifikasi kandidat/PDP. |
 | 0:55–1:25 | Keputusan desain | Tampilkan Option A pada Step 4. Terangkan membership sebagai sumber akses tenant, validasi evidence server-side, status generation tersimpan, dan kontrak API/UI tunggal. |
 | 1:25–2:10 | Tenant/auth | Perlihatkan login development dan halaman assessor. Jelaskan selector X-Tenant-Scheme memilih membership yang sudah sah; header sendiri tidak memberi akses. Jangan tampilkan password atau JWT. |
 | 2:10–2:50 | Evidence dan not assessed | Tampilkan fixture sintetis/hasil test. Bandingkan dua kutipan valid dari turn berbeda dengan skor string/kutipan palsu yang ditolak dan menjadi not_assessed. |
 | 2:50–3:25 | Fit-gap, kontrak, dan invite | Jelaskan generation idempotent, expected_level/is_override, lalu tunjukkan link undangan mengarah ke route React localhost:5173, bukan ke server API Rails. |
 | 3:25–3:50 | Bukti dan batasan | Tampilkan ringkasan build/tests dan status migrasi. Nyatakan AI Verification Moment bersifat offline; Gemini live, review dua tenant terintegrasi, dan validasi semantik belum diklaim. Sebut URL invite fix dan draf Step 6 masih lokal jika belum didorong. |
-| 3:50–4:10 | Penutup/submission | Sebut commit utama 19488a0 dan follow-up 2b65d9a, branch, URL PR kanonis bila telah dibuat, serta tindak lanjut: push dokumentasi audit ini, CI/DB integration, uji REST/WebSocket dua tenant, dan keputusan PDP/Legal. |
+| 3:50–4:10 | Penutup/submission | Sebut commit utama 19488a0, follow-up 2b65d9a, branch dan PR #133, serta tindak lanjut: CI/DB integration, uji REST/WebSocket dua tenant, dan keputusan PDP/Legal. |
 
 ### Checklist rekaman
 
 - Gunakan akun development dan fixture sintetis; jangan rekam kredensial, token, data kandidat, atau log berisi payload autentikasi.
 - Pastikan browser membuka branch/build yang sedang dijelaskan, dan tutup tab/notifikasi yang tidak relevan.
-- Bila PR belum dibuat, sebut bahwa tautan adalah halaman pembukaan PR; jangan tampilkan seolah review/merge telah terjadi.
+- Sebutkan PR #133 sebagai PR yang telah dibuat; jangan menyiratkan review/merge sebelum status tersebut dikonfirmasi.
 - Gunakan subtitle atau narasi yang menyebut batas demo serta status live-provider secara eksplisit.
 
 ## 7. Status kelengkapan submission dan tindak lanjut
 
-Dokumen ini masih **draf Markdown**, belum PDF siap unggah. Bukti screenshot yang tersedia adalah reproduksi sebelum fix dan memuat konten/token lokal; screenshot final yang sudah disanitasi, variasi responsive/edge/error states, tautan video eksternal 3–5 menit, serta bukti upload ke hiring platform belum tersedia. Outline video sudah ditulis, tetapi bukan rekaman. Karena autentikasi GitHub CLI invalid, PR kanonis dan status CI/reviewer/merge juga belum ada/terverifikasi.
+Dokumen ini masih **draf Markdown**, belum PDF siap unggah. Bukti screenshot yang tersedia adalah reproduksi sebelum fix dan memuat konten/token lokal; screenshot final yang sudah disanitasi, variasi responsive/edge/error states, tautan video eksternal 3–5 menit, serta bukti upload ke hiring platform belum tersedia. Outline video sudah ditulis, tetapi bukan rekaman. PR #133 sudah dibuat menurut konfirmasi pemilik branch; status CI/reviewer/merge belum diverifikasi.
 
 Sebelum menyatakan siap produksi atau kepatuhan penuh, tim masih perlu:
 
@@ -151,7 +151,7 @@ Sebelum menyatakan siap produksi atau kepatuhan penuh, tim masih perlu:
 3. Menjalankan uji provider AI live pada data sintetis yang disetujui, mengukur kualitas evidence/level dan perilaku prompt injection; jangan menjadikan skor otomatis keputusan final.
 4. Meminta Pengendali/Legal menentukan dasar pemrosesan, notice, retensi/pemusnahan, pemenuhan hak dan keberatan kandidat, DPIA bila relevan, kontrak pemroses, serta lokasi/transfer data provider.
 5. Setelah bukti visual final dan video tersedia, hasilkan satu PDF final, verifikasi render tiap halaman, unggah ke hiring platform, lalu simpan URL video dan bukti submission.
-6. Pulihkan autentikasi GitHub, verifikasi atau buat PR bernomor dari branch terbaru, pastikan perubahan dokumentasi audit ikut masuk bila dibutuhkan, lalu catat CI/reviewer/status merge. Perubahan audit Step 5 dan laporan ini perlu commit/push sebelum dianggap bagian dari remote submission.
+6. Pastikan commit pembaruan dokumen ini masuk ke branch PR #133, lalu verifikasi CI/reviewer/status merge dengan akses GitHub yang valid.
 
 ## Lampiran — berkas pendukung
 
