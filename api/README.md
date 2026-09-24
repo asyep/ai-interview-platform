@@ -47,6 +47,12 @@ rails db:migrate
 rails db:seed
 ```
 
+Tenant access is membership-based. To map one existing local admin user to the seeded test organization, run:
+
+    SEED_ADMIN_USER_ID=<existing-admin-user-id> bundle exec rails db:seed
+
+Then log in through POST /api/v1/auth/login with the X-Tenant-Scheme: test-corp header. User records without an explicitly provisioned membership cannot access tenant data. Do not mint JWTs manually; candidate access uses the session invite token.
+
 ---
 
 ## 4. Start Redis via Docker
