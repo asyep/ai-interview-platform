@@ -3,7 +3,7 @@
 **Proyek:** AI Interview Platform — Product Engineer Revamp  
 **Tanggal laporan:** 24 September 2026  
 **Branch:** feature/product-engineer-revamp  
-**Status:** Commit Step 5 tersinkron dengan remote-tracking branch. Perbaikan URL undangan yang dikerjakan sesudah commit itu dan draf ini masih perubahan lokal. Tautan yang diberikan membuka halaman pembuatan Pull Request.
+**Status:** Commit `2b65d9a` tersinkron dengan remote-tracking branch pada saat audit; perubahan dokumentasi audit/Step 5 yang sedang diselesaikan masih lokal. Tautan yang diberikan membuka halaman pembuatan Pull Request.
 
 > **Catatan submission:** URL yang diberikan berakhiran /pull/new/feature/product-engineer-revamp, yaitu halaman untuk membuat PR, bukan alamat PR bernomor yang telah dibuat. Setelah PR dibuat, ganti tautan ini dengan URL PR kanonis dan isi status review/merge.
 
@@ -14,17 +14,21 @@
 - Halaman pembukaan PR: [Buat Pull Request dari branch revamp](https://github.com/asyep/ai-interview-platform/pull/new/feature/product-engineer-revamp)
 - Base yang terlihat di repository lokal: main pada commit b836d02.
 - Commit branch: [19488a0113b5c109f68a151adeca43baa98156b8](https://github.com/asyep/ai-interview-platform/commit/19488a0113b5c109f68a151adeca43baa98156b8) — **feat: complete Option A tenant isolation, login fix, and UI integration**.
-- Remote-tracking branch origin/feature/product-engineer-revamp menunjuk commit yang sama dengan HEAD. Commit Step 5 di atas tersinkron ke remote. Setelah commit tersebut, perbaikan URL undangan mengubah api/app/models/session.rb, api/config/application.yml.sample, api/k8s/configmap.yaml, dan api/README.md; draf Step 6 juga baru dibuat. Lima perubahan lokal ini belum masuk ke commit/push yang tercatat.
+- HEAD dan `origin/feature/product-engineer-revamp` menunjuk commit `2b65d9a0343d3742531f48e46dd7ae7cdf5671a1` — **docs: finalize step-6 report draft and fix candidate interview link routing**. Commit sebelumnya `19488a0` memuat implementasi utama (56 file berubah; +1.686/-240). Commit `2b65d9a` memuat fix URL undangan dan laporan Step 6.
 - Ringkasan commit: 56 file berubah, sekitar 1.686 penambahan dan 240 penghapusan. Perubahan mencakup otorisasi tenant, validasi evidence AI, generation fit-gap, migrasi/schema, API–UI contract, unit/contract tests, serta dokumentasi Steps 2–5.
-- **Nomor PR, reviewer, status pemeriksaan GitHub, dan status merge:** lengkapi setelah PR dibuat/ditinjau. Jangan menyamakan halaman /pull/new/... dengan PR yang sudah terbentuk. Setelah persetujuan, sertakan perbaikan undangan dan laporan ini dalam commit/push submission bila keduanya masuk cakupan PR.
+- Link `/pull/new/feature/product-engineer-revamp` adalah halaman pembuatan PR, bukan PR bernomor. Pemeriksaan `gh auth status` menunjukkan token GitHub invalid; keberadaan PR, nomor PR, reviewer, CI GitHub, dan status merge tidak dapat diverifikasi. Jangan menyatakan PR sudah dibuat/ditinjau/merge.
 
-## 2. Executive summary
+## 2. Step 1 — Setup & Environment
+
+Audit lokal pada 24 September 2026 mengonfirmasi Ruby 3.3.2, Rails 7.0.10, PostgreSQL 14 siap menerima koneksi, Redis merespons `PONG`, Vite di port 5173 mengembalikan HTTP 200, dan Rails health endpoint di port 3001 mengembalikan HTTP 200. Migrasi development berstatus up. Ini membuktikan environment lokal berjalan saat pemeriksaan; bukan bukti deployment/availability production.
+
+## 3. Executive summary
 
 Revamp ini mengubah temuan audit menjadi satu vertical slice backend–frontend yang berfokus pada kepercayaan data dan kejelasan status. Perbaikan utama mengikat akses ke membership tenant yang eksplisit, memeriksa bukti AI sebelum persistence, menyimpan siklus generation fit-gap agar polling berulang tidak menggandakan pekerjaan, dan menggunakan kontrak API–UI bertipe untuk hasil assessed/not assessed serta override.
 
 Perubahan mengikuti **Option A — vertical slice evidence-first dengan penguatan batas kepercayaan**. Pendekatan ini dipilih untuk menutup risiko P1 utama tanpa membangun platform audit generik yang terlalu besar untuk scope perubahan ini. Hasilnya adalah fondasi teknis yang lebih aman untuk ditinjau, bukan klaim bahwa seluruh risiko produk, hukum, provider AI, dan operasi produksi sudah selesai.
 
-## 3. Narasi perjalanan Steps 2–5
+## 4. Narasi perjalanan Steps 2–5
 
 ### Step 2 — Domain Immersion
 
@@ -64,9 +68,13 @@ Implementasi Option A meliputi:
 5. **Harness verifikasi:** RSpec untuk auth/membership, WebSocket, evidence validator dan generation; tes Node untuk kontrak frontend.
 6. **URL undangan kandidat:** memperbaiki akar masalah dari demo lokal: Session sebelumnya memakai APP_BASE_URL yang menunjuk Rails API port 3001, sedangkan route /interview/:token dimiliki React. Session kini memakai FRONTEND_BASE_URL, default lokal localhost:5173, memangkas trailing slash, dan gagal eksplisit di production bila domain frontend belum dikonfigurasi.
 
+Pemeriksaan tambahan atas laporan ini menemukan assertion validator benar-benar menangkap batas rating yang rusak: scratch branch lokal `codex/seeded-fault-proof` menyimpan commit fault `96b0315` (rating 6 diterima), lalu test merah (4 examples, 1 failure); commit revert `3561c47` memulihkan batas dan test hijau (4 examples, 0 failures). Branch bukti ini lokal dan belum dipush.
+
+AI-assisted verification juga menemukan kesenjangan review sebelumnya: audit awal mencatat invite URL salah tetapi implementasi Step 5 belum memperbaikinya. Screenshot reproduksi menunjukkan Rails tidak memiliki route `/interview/:token`; verifikasi route membuktikan React/Vite menerima path tersebut. Fix `FRONTEND_BASE_URL` kini masuk commit `2b65d9a`. Ini adalah contoh nyata kegagalan kelengkapan yang dikoreksi, bukan bukti panggilan Gemini live.
+
 Migrasi 20260924000000_add_tenant_memberships_and_generation_state tercatat **up** pada database development lokal saat Step 6 disusun. Dokumen Step 5 merekam status sebelum migrasi lokal dijalankan; pemeriksaan ulang Step 6 memastikan semua migrasi lokal kini up. Membership produksi tetap harus diprovisioning lewat pemetaan organisasi yang diverifikasi; seed admin lokal dibatasi pada environment development.
 
-## 4. Monozukuri Proof
+## 5. Monozukuri Proof
 
 ### Seeded Fault Test
 
@@ -106,9 +114,11 @@ Pada fixture sintetis, dua kutipan kandidat yang sesuai dengan turn berbeda (tur
 | Status migrasi development | Seluruh migrasi, termasuk tenant/generation, up |
 | Route undangan lokal | Rails runner membentuk URL host frontend; route sintetis di Vite HTTP 200 dan path yang sama pada Rails HTTP 404 sebagaimana diharapkan |
 
+Suite web menggunakan Node native test runner (4 contract tests), bukan Vitest. RSpec berisi 12 unit/service examples dengan test doubles pada beberapa batas; belum ada request/integration suite multi-tenant, component/E2E, atau line/branch coverage. Down migration menolak rollback setelah data `not_assessed` dibuat karena schema sebelumnya mewajibkan level/confidence non-null; rollback aman-fail namun memerlukan restore/forward-fix.
+
 Build Vite memberi peringatan posisi anotasi komentar di dependency Zod; build tetap selesai sukses. Unit/service tests memakai test doubles untuk bagian otorisasi dan generation; tes itu bukan pengganti uji integrasi multi-tenant terhadap PostgreSQL/Sidekiq nyata. Pemeriksaan route undangan adalah verifikasi lokal tambahan, bukan bagian dari suite otomatis.
 
-## 5. Video walkthrough (3–5 menit)
+## 6. Video walkthrough (3–5 menit)
 
 **Target durasi: sekitar 4 menit.** Gunakan data sintetis dan hindari merekam kredensial, token, transkrip kandidat, atau informasi pribadi.
 
@@ -121,7 +131,7 @@ Build Vite memberi peringatan posisi anotasi komentar di dependency Zod; build t
 | 2:10–2:50 | Evidence dan not assessed | Tampilkan fixture sintetis/hasil test. Bandingkan dua kutipan valid dari turn berbeda dengan skor string/kutipan palsu yang ditolak dan menjadi not_assessed. |
 | 2:50–3:25 | Fit-gap, kontrak, dan invite | Jelaskan generation idempotent, expected_level/is_override, lalu tunjukkan link undangan mengarah ke route React localhost:5173, bukan ke server API Rails. |
 | 3:25–3:50 | Bukti dan batasan | Tampilkan ringkasan build/tests dan status migrasi. Nyatakan AI Verification Moment bersifat offline; Gemini live, review dua tenant terintegrasi, dan validasi semantik belum diklaim. Sebut URL invite fix dan draf Step 6 masih lokal jika belum didorong. |
-| 3:50–4:10 | Penutup/submission | Sebut commit 19488a0, branch, URL PR kanonis bila telah dibuat, dan tindak lanjut: commit/push perubahan lokal, CI/DB integration, uji REST/WebSocket dua tenant, serta keputusan PDP/Legal. |
+| 3:50–4:10 | Penutup/submission | Sebut commit utama 19488a0 dan follow-up 2b65d9a, branch, URL PR kanonis bila telah dibuat, serta tindak lanjut: push dokumentasi audit ini, CI/DB integration, uji REST/WebSocket dua tenant, dan keputusan PDP/Legal. |
 
 ### Checklist rekaman
 
@@ -130,7 +140,9 @@ Build Vite memberi peringatan posisi anotasi komentar di dependency Zod; build t
 - Bila PR belum dibuat, sebut bahwa tautan adalah halaman pembukaan PR; jangan tampilkan seolah review/merge telah terjadi.
 - Gunakan subtitle atau narasi yang menyebut batas demo serta status live-provider secara eksplisit.
 
-## 6. Batas yang tersisa dan tindak lanjut submission
+## 7. Status kelengkapan submission dan tindak lanjut
+
+Dokumen ini masih **draf Markdown**, belum PDF siap unggah. Bukti screenshot yang tersedia adalah reproduksi sebelum fix dan memuat konten/token lokal; screenshot final yang sudah disanitasi, variasi responsive/edge/error states, tautan video eksternal 3–5 menit, serta bukti upload ke hiring platform belum tersedia. Outline video sudah ditulis, tetapi bukan rekaman. Karena autentikasi GitHub CLI invalid, PR kanonis dan status CI/reviewer/merge juga belum ada/terverifikasi.
 
 Sebelum menyatakan siap produksi atau kepatuhan penuh, tim masih perlu:
 
@@ -138,7 +150,8 @@ Sebelum menyatakan siap produksi atau kepatuhan penuh, tim masih perlu:
 2. Melakukan verifikasi WebSocket/REST black-box dengan membership/role berbeda; memastikan provisioning produksi diberikan berdasarkan pemetaan organisasi terverifikasi.
 3. Menjalankan uji provider AI live pada data sintetis yang disetujui, mengukur kualitas evidence/level dan perilaku prompt injection; jangan menjadikan skor otomatis keputusan final.
 4. Meminta Pengendali/Legal menentukan dasar pemrosesan, notice, retensi/pemusnahan, pemenuhan hak dan keberatan kandidat, DPIA bila relevan, kontrak pemroses, serta lokasi/transfer data provider.
-5. Commit dan push empat file perubahan URL undangan serta draf laporan ini bila masuk submission; buat PR dari branch yang diperbarui, ganti tautan /pull/new/... dengan URL PR bernomor, catat reviewer/CI, dan lengkapi keputusan merge.
+5. Setelah bukti visual final dan video tersedia, hasilkan satu PDF final, verifikasi render tiap halaman, unggah ke hiring platform, lalu simpan URL video dan bukti submission.
+6. Pulihkan autentikasi GitHub, verifikasi atau buat PR bernomor dari branch terbaru, pastikan perubahan dokumentasi audit ikut masuk bila dibutuhkan, lalu catat CI/reviewer/status merge. Perubahan audit Step 5 dan laporan ini perlu commit/push sebelum dianggap bagian dari remote submission.
 
 ## Lampiran — berkas pendukung
 

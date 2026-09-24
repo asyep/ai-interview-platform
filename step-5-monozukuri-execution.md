@@ -46,7 +46,11 @@ Jalankan fault kontrak dari folder web/ bersama seluruh suite:
 
     npm test
 
-Hasil yang diharapkan: evidence/score yang gagal tidak menghasilkan rating tersimpan dan dipresentasikan sebagai not_assessed; contract parser menolak field atau tipe yang tidak sah. Suite yang dijalankan pada workspace ini menghasilkan 4 contoh API validator dan 4 kasus kontrak web lulus.
+Hasil normal: evidence/score yang gagal tidak menghasilkan rating tersimpan dan dipresentasikan sebagai not_assessed; contract parser menolak field atau tipe yang tidak sah. Suite normal menghasilkan 4 contoh API validator dan 4 kasus kontrak web lulus.
+
+### Fault injection dengan riwayat scratch branch
+
+Untuk memenuhi pemeriksaan bahwa assertion benar-benar menangkap regresi, branch lokal terpisah `codex/seeded-fault-proof` dibuat dari commit implementasi. Pada commit fault `96b0315`, batas rating validator sengaja diubah dari 1–5 menjadi 1–6. Tes `does not coerce strings, booleans, or out-of-range ratings` kemudian **gagal sesuai harapan**: nilai 6 diterima sebagai `assessed`, sedangkan assertion mengharapkan `not_assessed` (4 examples, 1 failure). Commit tersebut dibalik pada `3561c47`; tes yang sama dijalankan lagi dan lulus (4 examples, 0 failures). Kedua commit dipertahankan berurutan pada scratch branch untuk memperlihatkan inject → red → revert → green. Branch/worktree bukti ini lokal dan belum dipush.
 
 ## AI Verification Moment
 
@@ -54,21 +58,19 @@ Verifikasi lokal memakai payload model berbentuk JSON dan dua turn **kandidat si
 
 Ini membuktikan validator dan jalur bukti secara offline; **tidak ada panggilan Gemini langsung pada sesi ini** dan tidak ada transkrip kandidat nyata yang digunakan. Uji live provider, akurasi semantik skill, serta perilaku model saat prompt injection masih perlu dijalankan pada environment dengan kredensial dan data sintetis yang disetujui.
 
+### AI-assisted coding verification moment
+
+Perbaikan Option A dan laporan audit masih melewatkan defect P1-06: `Session#invite_url` membentuk route kandidat pada `APP_BASE_URL` yang menunjuk host API Rails port 3001. Screenshot reproduksi menunjukkan Rails `No route matches GET /interview/:token`. Ini merupakan risiko kelengkapan dalam alur kerja coding/review berbantuan AI: temuan telah tercatat, tetapi tidak tertutup dalam perubahan awal. Verifikasi dilakukan terhadap dua route lokal—React/Vite pada port 5173 menerima path candidate, Rails pada port 3001 tidak memilikinya—lalu implementasi diganti ke `FRONTEND_BASE_URL`, dengan default localhost development dan fail-fast pada production tanpa konfigurasi. Rails runner memastikan URL sesi memakai host frontend. Ini mendokumentasikan kesalahan/risiko implementasi AI-assisted yang nyata, bukan mengklaim bahwa Gemini live telah diverifikasi.
+
 ## Migrasi dan persiapan tenant
 
-Migrasi baru: api/db/migrate/20260924000000_add_tenant_memberships_and_generation_state.rb. Migrasi **belum dijalankan** pada database lokal. Akses ke 127.0.0.1:5432 ditolak oleh sandbox (Operation not permitted), sehingga perubahan SQL/schema perlu diterapkan dan diperiksa pada database pengembangan/CI yang tersedia sebelum merge/deploy.
+Migrasi baru: api/db/migrate/20260924000000_add_tenant_memberships_and_generation_state.rb. Saat catatan Step 5 pertama ditulis, akses DB lokal dibatasi sandbox. Pemeriksaan ulang untuk audit Step 6 menunjukkan PostgreSQL lokal aktif dan semua migrasi, termasuk migrasi ini, berstatus **up** pada database development. Jalur migrasi test DB kosong/upgrade dan CI tetap perlu dijalankan.
 
-Membership user lama sengaja tidak di-backfill otomatis. Setelah migrasi, pemilik tenant harus memetakan user ke organisasi yang benar; user tanpa membership tidak dapat login/mengakses REST. Untuk admin lokal saja, seed menerima ID eksplisit:
-
-    SEED_ADMIN_USER_ID=<id-admin-yang-sudah-ada> bundle exec rails db:seed
-
-Jangan menjalankan pemetaan massal lintas organisasi. Untuk produksi, gunakan pemetaan tenant yang diverifikasi dan prosedur provisioning organisasi. Pastikan migrasi berjalan pada database kosong dan database upgrade, lalu verifikasi constraint, index unik, foreign key ke organisasi, serta regresi request dua tenant.
+Membership user lama sengaja tidak di-backfill otomatis. User tanpa membership tidak dapat login/mengakses tenant REST. Seed development membuat akun admin test-corp lokal dan membership; jangan menjalankannya untuk provisioning produksi. Pemilik tenant harus memetakan user produksi ke organisasi yang benar. Verifikasi constraint, index unik, foreign key ke organisasi, dan regresi request dua tenant pada CI/database integrasi.
 
 ## Pull request
 
-Pull request **belum dibuat**. Repo memiliki remote GitHub, tetapi gh auth status gagal (CLI tidak terautentikasi); jaringan lokal database juga dibatasi. Perubahan saat ini tersimpan sebagai working-tree changes pada branch feature/product-engineer-revamp; belum ada commit atau push yang dibuat.
-
-Setelah autentikasi GitHub tersedia dan migrasi diuji pada database pengembangan/CI, perubahan siap ditinjau sebagai PR. Periksa hanya file Step 5 dan kode yang berubah; catatan Step 2–4 yang sudah ada di working tree tidak termasuk scope PR Step 5.
+Commit branch feature/product-engineer-revamp tersinkron dengan origin menurut remote-tracking ref. URL /pull/new/feature/product-engineer-revamp adalah halaman pembukaan PR, bukan URL PR bernomor. Pada audit Step 6, `gh auth status` menunjukkan token GitHub invalid, sehingga status PR/review/merge belum dapat diverifikasi atau dibuat melalui CLI. Sebelum submission, buat PR dari branch tersebut dan catat URL PR kanonis serta CI/reviewer.
 
 ## Batas verifikasi dan follow-up
 
@@ -77,3 +79,5 @@ Setelah autentikasi GitHub tersedia dan migrasi diuji pada database pengembangan
 - Live Gemini verification belum dilakukan; hasil provider tidak boleh diklaim tervalidasi secara semantik.
 - Batas retensi/penghapusan data, notice kandidat, dasar pemrosesan, DPIA, wilayah/transfer Gemini, dan proses keberatan tetap keputusan Pengendali/Legal sesuai Constraint Signal Langkah 4.
 - User/tenant provisioning produksi belum disediakan sebagai UI/API admin pada perubahan ini. Kegagalan tertutup disengaja sampai membership diberikan secara sah.
+- Web tidak menggunakan Vitest: TypeScript contract dikompilasi lalu diuji dengan native Node test runner. Empat contract tests lulus, tetapi tidak ada line/branch coverage terukur atau component/e2e tests.
+- Down migration menolak rollback apabila terdapat skill `not_assessed`, karena skema sebelumnya mewajibkan ai_level dan confidence non-null. Ini melindungi data dari rollback lossy, namun membuat migrasi hanya reversibel sebelum status baru tersebut digunakan; rencana rollback sesudahnya memerlukan restore/forward-fix.
