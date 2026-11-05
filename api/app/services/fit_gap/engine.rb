@@ -87,8 +87,7 @@ module FitGap
           skill_label:     skill.skill_label,
           is_assessed:     skill.is_assessed?,
           ai_level:        skill.ai_level,
-          # SEEDED FAULT FOR STEP 5 PROOF: Ignored assessor override
-          effective_level: skill.ai_level,
+          effective_level: override ? override.override_level : skill.ai_level,
           confidence:      skill.ai_confidence,
           overridden:      override.present?,
           assessor_notes:  override&.assessor_notes
